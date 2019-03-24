@@ -4,7 +4,8 @@ var express = require('express');
 var cors = require('cors');
 
 // require and use "multer"...
-
+var multer = require('multer');
+var upload = multer();
 var app = express();
 
 app.use(cors());
@@ -16,6 +17,15 @@ app.get('/', function (req, res) {
 
 app.get('/hello', function(req, res){
   res.json({greetings: "Hello, API"});
+});
+
+app.post('/api/fileanalyse', upload.single('upfile'), (req, res)=>{
+  res.json({filename: req.file.originalname, size: req.file.size})
+});
+
+// Not found middleware
+app.use((req, res, next) => {
+  return res.status('404').send('Not found')
 });
 
 app.listen(process.env.PORT || 3000, function () {
